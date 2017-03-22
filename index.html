@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html id="gonnaFullScreen">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" id="main" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" /
+		<title></title>
+		<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,700&amp;subset=cyrillic" rel="stylesheet">
+		<link rel="stylesheet" href="/style.css" type="text/css" />
+		<script src="/js/jquery-3.1.1.min.js"></script>
+		<script src="/js/Chart.min.js"></script>
+		<script src="/js/knockout-min.js"></script>
+		<script src="/js/main.js"></script>
+	</head>
+	<body data-bind="css: currentTheme()">
+		
+		
+		
+		<div class="mainpad f fd-c jc-sb" data-bind="css: 'visual-' + visualClass()">
+			
+			<div class="block1 f">
+				<div class="block1-1 pdAll-3" style="width: 42vw; flex-shrink: 0;">
+					
+					<div class="thin mrBottom-2"><span data-bind="text: weather().name"></span>, <span class="dashed" data-bind="click: updateAll">update</span>d at: <!-- ko if: weatherLoaded() --><span data-bind="text: weatherUpdatedAt().hour + ':' + weatherUpdatedAt().minute"></span><!-- /ko --></div>
+					
+					<div class="clock thin mrBottom-1">
+						<span data-bind="text: currentTime().hour, click: goFullScreen"></span>:<span data-bind="text: currentTime().minute"></span><small data-bind="text: currentTime().second"></small>
+					</div>
+					
+					<div class="f jc-sb thin mrBottom-3">
+						<div class="">Sunrise: <!-- ko if: weatherLoaded() --><span data-bind="text: sunrise().hour + ':' + sunrise().minute"></span><!-- /ko --></div>
+						<div class="">Sunset: <!-- ko if: weatherLoaded() --><span data-bind="text: sunset().hour + ':' + sunrise().minute"></span><!-- /ko --></div>
+					</div>
+					<!-- ko if: weatherLoaded() -->
+					<div class="f jc-sb thin mrBottom-3">
+						<div><span class="font-7" data-bind="text: (weather().main.temp).toFixed(1)"></span><span class="font-3">&deg;C</span></div>
+						<div><span class="font-7" data-bind="text: weather().main.humidity"></span><span class="font-3">%</span></div>
+					</div>
+					<div class="thin">
+						<div>Cloudness: <span data-bind="text: weather().weather[0].description"></span></div>
+						
+						<div>Wind: <span data-bind="text: weather().wind.speed"></span> m/s, <span data-bind="text: windDirection()"></span></div>
+						
+						<!-- ko if: weather().rain -->
+						<div>Rain: <span data-bind="text: weather().rain['3h']"></span></div>
+						<!-- /ko -->
+						<!-- ko if: weather().snow -->
+						<div>Snow: <span data-bind="text: weather().snow['3h']"></span></div>
+						<!-- /ko -->
+					</div>
+					<!-- /ko -->
+				</div>
+				
+				<div class="block1-2 fg-1 pdAll-3">
+					
+					<div class="mrBottom-1">
+						<div class="thin mrBottom-1">Pressure: <!-- ko if: weatherLoaded() --><span data-bind="text: Math.round(weather().main.pressure * 0.750062)"></span><!-- /ko --> mm Hg</div>
+						<div>
+							<canvas id="canvPressureHistory" height="130"></canvas>
+						</div>
+					</div>
+					
+					<div>
+						<div class="thin mrBottom-1">Precipitation: <!-- ko if: weatherLoaded() --><span data-bind="text: nextPrecipitation().toFixed(3)"></span><!-- /ko --> mm</div>
+						<div>
+							<canvas id="canvPrecipitation" height="130"></canvas>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+				
+			
+			<div class="block2 pdAll-1">
+				<div>
+					<canvas id="canvForecast" height="300"></canvas>
+				</div>
+			</div>
+		
+		
+		</div>
+
+
+		
+		
+	
+	
+	</body>
+</html>
