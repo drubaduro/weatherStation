@@ -48,7 +48,9 @@ $(function(){
 		var cityId = '524901'; // Moscow
 		var refreshWeatherDelay = 10; // minutes
 		var refreshForecastDelay = 60; // minutes
-		var pressureHistoryInterval = 60; // minutes
+		var pressureHistoryInterval = 180; // minutes
+		var pressureHistoryUpdateEvery = 3; // Hours
+		var precipMaxPossibleValue = 7; //
 		var chart1, chart2, chart3;
 		var inID1, inID2;
 		var self = this;
@@ -58,12 +60,12 @@ $(function(){
 				class: 'dayTheme',
 				defaultFontColor: '#333333',
 				gridColor: 'rgba(50, 50, 50, 0.2)',
-				chart_1_borderColor_1: 'rgba(255, 0, 0, 0.7)',
-				chart_1_backgroundColor_1: 'rgba(255, 0, 0, 0.7)',
-				chart_1_borderColor_2: 'rgba(0, 127, 0, 0.7)',
-				chart_1_backgroundColor_2: 'rgba(0, 127, 0, 0.7)',
-				chart_2_borderColor_1: 'rgba(50, 50, 128, 0.7)',
-				chart_2_backgroundColor_1: 'rgba(50, 50, 128, 0.7)',
+				chart_1_borderColor_1: 'rgba(200, 100, 100, 0.5)',
+				chart_1_backgroundColor_1: 'rgba(200, 100, 100, 0.5)',
+				chart_1_borderColor_2: 'rgba(50, 50, 128, 0.5)',
+				chart_1_backgroundColor_2: 'rgba(50, 50, 128, 0.5)',
+				chart_2_borderColor_1: 'rgba(50, 50, 128, 0.5)',
+				chart_2_backgroundColor_1: 'rgba(50, 50, 128, 0.5)',
 				chart_2_borderColor_2: 'rgba(200, 100, 100, 0.5)',
 				chart_2_backgroundColor_2: 'rgba(200, 100, 100, 0.5)',
 				chart_3_borderColor: 'rgba(0, 127, 0, 0.7)',
@@ -341,8 +343,17 @@ $(function(){
 				var data0 = data.list.map(function(el){
 					return el.main.temp
 				});
-				var data1 = data.list.map(function(el){
+	/*			var data1 = data.list.map(function(el){
 					return el.main.pressure * 0.750062;
+				});*/
+				
+				var data1 = data.list.map(function(el){
+					if(el.snow) {
+						return (el.snow['3h'])? el.snow['3h'] : 0
+					};
+					if(el.rain) {
+						return (el.rain['3h'])? el.rain['3h'] : 0
+					}
 				});
 				
 				if(typeof chart1 == 'object') {
@@ -352,27 +363,28 @@ $(function(){
 					chart1.update();
 				} else {
 					chart1 = new Chart('canvForecast', {
-						type: 'line',
+						type: 'bar',
+						//responsive: true,
 						data: {
 							labels: labels,
 							datasets: [{
+								type: 'line',
 								data: data0,
 								fill: false,
 								borderWidth: 3,
-								pointRadius: 0,
-								pointBorderWidth: 0,
+								pointRadius: 1,
+								pointBorderWidth: 1,
 								yAxisID: 'yAxe0',
-								label: 't, °C',
-								steppedLine: true,
+								label: 't, °C'
 							},
 							{
 								data: data1,
 								fill: false,
-								borderWidth: 3,
+								borderWidth: 0,
 								pointRadius: 0,
 								pointBorderWidth: 0,
 								yAxisID: 'yAxe1',
-								label: 'pressure, mm Hg',
+								label: 'Precipitation',
 							}]
 						},
 						options: {
@@ -384,9 +396,13 @@ $(function(){
 								{
 									position: 'right',
 									id: 'yAxe1',
+									gridLines: {
+										display: false
+									},
 									ticks: {
-										min: 730,
-										max: 790
+										display: false,
+										min: 0,
+										max: precipMaxPossibleValue
 									}
 								}],
 								xAxes: [{
@@ -477,7 +493,7 @@ $(function(){
 									id: 'yAxe0',
 									ticks: {
 										min: 0,
-										max: 5
+										max: precipMaxPossibleValue
 									}
 								},
 								{
